@@ -54,9 +54,10 @@ class QNntp(QtCore.QObject):
         '''
         Connect to host.
 
-        Arguments:
-            host (str): name of the host
-            port (int): port to connect (defaults to 119)
+        Parameters
+        ----------
+        host : str
+        port : int, optional
         '''
         self._queue = [('welcome', self._getWelcome, False)]
         self._socket.connectToHost(host, port)
@@ -175,12 +176,15 @@ class QNntp(QtCore.QObject):
 
     def list(self, pattern=''):
         '''
-        Perform a LIST or LIST ACTIVE command.
+        Perform a ``LIST`` or ``LIST ACTIVE`` command.
 
-        Arguments:
-            pattern (str): pattern to match (optional)
-        Emits:
-            listReady([[group(str), low(str), high(str), flag(str)]...])
+        Parameters
+        ----------
+        pattern : str, optional
+
+        Emits
+        -----
+        listReady : on success
         '''
         if pattern:
             cmd = 'LIST ACTIVE %s' % pattern
@@ -190,12 +194,15 @@ class QNntp(QtCore.QObject):
 
     def group(self, name):
         '''
-        Perform a GROUP command.
+        Perform a ``GROUP`` command.
 
-        Arguments:
-            name (str): group name
-        Emits:
-            groupReady(count(int), low(int), high(int), name(str))
+        Parameters
+        ----------
+        name : str
+
+        Emits
+        -----
+        groupReady : on success
         '''
         cmd = 'GROUP %s' % name
         self._currentGroup = name.lower()
@@ -203,14 +210,17 @@ class QNntp(QtCore.QObject):
 
     def listgroup(self, group=None, start=None, end=None):
         '''
-        Perform a LISTGROUP [group [range]] command.
+        Perform a ``LISTGROUP`` command.
 
-        Arguments:
-            | group (str): group name
-            | start (int): range start
-            | end (int): range end
-        Emits:
-            listgroupReady([int, int, ...])
+        Parameters
+        ----------
+        group : str, optional
+        start : int, optional
+        end : int, optional
+
+        Emits
+        -----
+        listgroupReady : on success
         '''
         cmd = 'LISTGROUP'
         if group:
@@ -223,12 +233,21 @@ class QNntp(QtCore.QObject):
 
     def stat(self, descriptor=''):
         '''
-        Perform a STAT command.
+        Perform a ``STAT`` command.
 
-        Arguments:
-            descriptor (str): message descriptor. message-id or article number
-        Emits:
-            statReady(articleNo(int), messageId(str))
+        Parameters
+        ----------
+        descriptor : str, optional
+            message-id or article number
+
+        Emits
+        -----
+        statReady : on success
+
+        See Also
+        --------
+        :meth:`next`
+        :meth:`last`
         '''
         if descriptor:
             cmd = 'STAT %s' % descriptor
@@ -238,33 +257,38 @@ class QNntp(QtCore.QObject):
 
     def next(self):
         '''
-        Perform a NEXT command.
+        Perform a ``NEXT`` command.
 
-        Emits:
-            statReady(articleNo(int), messageId(str))
+        Emits
+        -----
+        statReady : on success
         '''
         cmd = 'NEXT'
         self._putCommand(cmd, self._getStat, False)
 
     def last(self):
         '''
-        Perform a LAST command.
+        Perform a ``LAST`` command.
 
-        Emits:
-            statReady(articleNo(int), messageId(str))
+        Emits
+        -----
+        statReady : on success
         '''
         cmd = 'LAST'
         self._putCommand(cmd, self._getStat, False)
 
     def article(self, descriptor=''):
         '''
-        Perform an ARTICLE command.
+        Perform an ``ARTICLE`` command.
 
-        **Arguments:**
-            descriptor (str): message descriptor. message-id or article number.
-            defaults to current article.
-        Emits:
-            articleReady(headers(list), body(str))
+        Parameters
+        ----------
+        descriptor : str, optional
+            message-id or article number
+
+        Emits
+        -----
+        articleReady : on success
         '''
         if descriptor:
             cmd = 'ARTICLE %s' % descriptor
@@ -274,13 +298,16 @@ class QNntp(QtCore.QObject):
 
     def head(self, descriptor=''):
         '''
-        Perform an HEAD command.
+        Perform a ``HEAD`` command.
 
-        Arguments:
-            descriptor (str): message descriptor. message-id or article number.
-            defaults to current article.
-        Emits:
-            headReady(headers(list))
+        Parameters
+        ----------
+        descriptor : str, optional
+            message-id or article number
+
+        Emits
+        -----
+        headReady : on success
         '''
         if descriptor:
             cmd = 'HEAD %s' % descriptor
@@ -290,13 +317,16 @@ class QNntp(QtCore.QObject):
 
     def body(self, descriptor=''):
         '''
-        Perform an BODY command.
+        Perform a ``BODY`` command.
 
-        Arguments:
-            descriptor (str): message descriptor. message-id or article number.
-            defaults to current article.
-        Emits:
-            bodyReady(headers(list))
+        Parameters
+        ----------
+        descriptor : str, optional
+            message-id or article number
+
+        Emits
+        -----
+        bodyReady : on success
         '''
         if descriptor:
             cmd = 'BODY %s' % descriptor
